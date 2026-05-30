@@ -4,7 +4,7 @@
 Refined Editorial / Architecture Magazine. Warm, sophisticated, typography-driven. Inspired by high-end print publications.
 
 ## Fonts
-- **Headings**: Playfair Display — refined serif with beautiful italic. Used for all section titles, page headings, decorative numbers. Weights: semibold (600) for headings, italic for emphasis.
+- **Headings**: Poppins — clean geometric sans-serif with excellent weight range. Used for all section titles, page headings, decorative numbers. Weights: semibold (600) for headings.
 - **Body**: DM Sans — clean geometric sans. Used for all body copy, inputs, buttons.
 - **Code/Mono**: JetBrains Mono — technical monospace. Used for code blocks, paths, data types, tags.
 
