@@ -62,7 +62,7 @@ function EmptyState() {
           <ClipboardList className="size-9 text-primary/70" />
         </div>
       </div>
-      <h2 className="text-4xl font-heading font-black tracking-tight text-foreground/90 mb-3">
+      <h2 className="text-4xl font-heading font-semibold italic tracking-tight text-foreground/85 mb-4 leading-[1.15]">
         Ready to plan your project?
       </h2>
       <p className="text-base text-muted-foreground/70 max-w-md leading-relaxed">
@@ -118,7 +118,7 @@ export default function Home() {
               <ClipboardList className="size-5 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <h1 className="text-xl font-heading font-extrabold tracking-tight">AI Project Planner</h1>
+              <h1 className="font-heading font-semibold tracking-tight">AI Project Planner</h1>
               <p className="text-xs text-muted-foreground/60 font-mono tracking-wider uppercase">Turn rough ideas into structured briefs</p>
             </div>
             {brief && (

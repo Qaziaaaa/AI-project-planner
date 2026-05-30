@@ -38,7 +38,7 @@ export function EditableSection({
               {icon}
             </span>
           )}
-          <h3 className="text-base font-heading font-bold tracking-tight text-foreground/90">
+          <h3 className="text-base font-heading font-semibold tracking-tight text-foreground/85">
             {title}
           </h3>
         </div>
