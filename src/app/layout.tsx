@@ -24,10 +24,6 @@ export const metadata: Metadata = {
   title: "BriefKit — AI Project Planner",
   description:
     "Turn rough app ideas into structured project briefs with AI. Features, tech stack, data model, routes, build phases, and more.",
-  icons: [
-    { rel: "icon", url: "/favicon.svg", type: "image/svg+xml" },
-    { rel: "shortcut icon", url: "/favicon.svg", type: "image/svg+xml" },
-  ],
   appleWebApp: { title: "BriefKit" },
   other: { "theme-color": "#14100E" },
   openGraph: {
