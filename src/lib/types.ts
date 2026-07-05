@@ -45,6 +45,7 @@ export interface Risk {
 }
 
 export interface ProjectBrief {
+  projectType?: string
   summary: string
   targetUsers: string
   coreFeatures: Feature[]
@@ -54,4 +55,5 @@ export interface ProjectBrief {
   buildPhases: BuildPhase[]
   risks: Risk[]
   starterPrompt: string
+  feedback?: string
 }

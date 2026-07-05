@@ -5,7 +5,7 @@ import { IdeaInput } from "@/components/planner/idea-input"
 import { BriefView } from "@/components/planner/brief-view"
 import { Button } from "@/components/ui/button"
 import { Toaster, toast } from "sonner"
-import { FileDown, RotateCcw, Plus, ClipboardList } from "lucide-react"
+import { FileDown, RotateCcw, Plus, ClipboardList, Lightbulb, Info } from "lucide-react"
 import { downloadMarkdown } from "@/lib/export"
 import type { ProjectBrief } from "@/lib/types"
 
@@ -65,9 +65,11 @@ export default function Home() {
   const [brief, setBrief] = useState<ProjectBrief | null>(null)
   const [loading, setLoading] = useState(false)
   const [lastIdea, setLastIdea] = useState("")
+  const [hint, setHint] = useState<string | null>(null)
 
   const handleGenerate = async (idea: string) => {
     setLoading(true)
+    setHint(null)
     setLastIdea(idea)
     try {
       const res = await fetch("/api/generate", {
@@ -75,13 +77,15 @@ export default function Home() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idea }),
       })
-      if (!res.ok) {
-        const err = await res.json()
-        throw new Error(err.error || "Failed to generate brief")
+      const data = await res.json()
+      if (data.error === "short-input" || data.error === "invalid-idea") {
+        setHint(data.message)
+        return
       }
-      const data: ProjectBrief = await res.json()
-      setBrief(data)
-      toast.success("Project brief generated!")
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to generate brief")
+      }
+      setBrief(data as ProjectBrief)
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Something went wrong")
     } finally {
@@ -113,7 +117,7 @@ export default function Home() {
                   className="gap-1.5 border-border/40 text-xs shadow-xs">
                   <RotateCcw className="size-3.5" /> Regenerate
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => { setBrief(null); setLastIdea("") }}
+                <Button variant="outline" size="sm" onClick={() => { setBrief(null); setLastIdea(""); setHint(null) }}
                   className="gap-1.5 border-border/40 text-xs shadow-xs">
                   <Plus className="size-3.5" /> New
                 </Button>
@@ -125,9 +129,23 @@ export default function Home() {
         <main className="flex-1 mx-auto w-full max-w-3xl px-5 py-12">
           <div className="mb-10">
             <IdeaInput onGenerate={handleGenerate} loading={loading} />
+            {hint && (
+              <div className="mt-3 flex items-start gap-2.5 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-foreground/80">
+                <Info className="size-4 mt-0.5 shrink-0 text-primary" />
+                <span>{hint}</span>
+              </div>
+            )}
           </div>
           {loading ? <LoadingSkeleton /> : brief ? (
-            <div className="animate-fade-in-up"><BriefView brief={brief} onUpdate={setBrief} /></div>
+            <div className="space-y-4 animate-fade-in-up">
+              {brief.feedback && (
+                <div className="flex items-start gap-2.5 rounded-lg border border-amber-200/30 bg-amber-50/5 px-4 py-3 text-sm text-foreground/70">
+                  <Lightbulb className="size-4 mt-0.5 shrink-0 text-amber-400" />
+                  <span>{brief.feedback}</span>
+                </div>
+              )}
+              <BriefView brief={brief} onUpdate={setBrief} />
+            </div>
           ) : <EmptyState />}
         </main>
       </div>

@@ -1,68 +1,9 @@
 import { createOpenAI } from "@ai-sdk/openai"
-import { generateObject } from "ai"
-import { z } from "zod"
+import { generateText } from "ai"
 
-const openrouter = createOpenAI({
-  baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.OPENROUTER_API_KEY,
-})
-
-const featureSchema = z.object({
-  name: z.string(),
-  description: z.string(),
-  priority: z.enum(["high", "medium", "low"]),
-})
-
-const techItemSchema = z.object({
-  category: z.string(),
-  items: z.array(z.string()),
-})
-
-const routeSchema = z.object({
-  path: z.string(),
-  name: z.string(),
-  description: z.string(),
-})
-
-const attributeSchema = z.object({
-  name: z.string(),
-  type: z.string(),
-})
-
-const relationshipSchema = z.object({
-  targetId: z.string(),
-  type: z.string(),
-})
-
-const dataEntitySchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  attributes: z.array(attributeSchema),
-  relationships: z.array(relationshipSchema),
-})
-
-const buildPhaseSchema = z.object({
-  phase: z.string(),
-  tasks: z.array(z.string()),
-  duration: z.string(),
-})
-
-const riskSchema = z.object({
-  risk: z.string(),
-  mitigation: z.string(),
-  severity: z.enum(["high", "medium", "low"]),
-})
-
-const briefSchema = z.object({
-  summary: z.string(),
-  targetUsers: z.string(),
-  coreFeatures: z.array(featureSchema),
-  techStack: z.array(techItemSchema),
-  pages: z.array(routeSchema),
-  dataModel: z.array(dataEntitySchema),
-  buildPhases: z.array(buildPhaseSchema),
-  risks: z.array(riskSchema),
-  starterPrompt: z.string(),
+const groq = createOpenAI({
+  baseURL: "https://api.groq.com/openai/v1",
+  apiKey: process.env.GROQ_API_KEY,
 })
 
 export async function POST(req: Request) {
@@ -72,71 +13,61 @@ export async function POST(req: Request) {
     return Response.json({ error: "Idea is required" }, { status: 400 })
   }
 
-  const model = openrouter("openai/gpt-4o-mini")
+  if (idea.trim().length < 10) {
+    return Response.json({
+      error: "short-input",
+      message: "Tell me a bit more about your idea — what does it do and who is it for?",
+    })
+  }
 
-  const { object } = await generateObject({
+  const model = groq("llama-3.3-70b-versatile")
+
+  const { text } = await generateText({
     model,
-    schema: briefSchema,
-    prompt: `You are an expert software engineering consultant. Given a rough app idea, produce a detailed project brief.
+    temperature: 0.5,
+    prompt: `You are a senior software engineer and technical strategist. Your job is to take a rough project idea and turn it into a concrete, actionable project brief.
 
-App idea: "${idea}"
+Read this idea: """${idea}"""
 
-Return a complete JSON project brief covering:
-- summary: 2-3 sentence summary
-- targetUsers: who this is for
-- coreFeatures: 4-8 features each with name, description, priority (high/medium/low)
-- techStack: 4-6 categories (frontend, backend, database, hosting, etc.) each with specific items
-- pages: 4-8 routes with path, name, description
-- dataModel: 3-6 entities with id (kebab-case), name, attributes (name + type), relationships (targetId + type)
-- buildPhases: 3-5 phases with name, tasks array, duration
-- risks: 2-4 risks with risk, mitigation, severity (high/medium/low)
-- starterPrompt: a comprehensive, production-ready prompt for a coding agent (see format below)
+First, identify what KIND of project this is — could be a web app, mobile app, API/microservice, CLI tool, game, design system, data pipeline, e-commerce store, SaaS platform, internal tool, real-estate system, or something else. Your output must be tailored to that type.
 
-The starterPrompt must be a detailed, structured prompt following this format exactly:
+Then produce a JSON brief with these fields:
 
-You are a senior developer implementing [app name]. Build a production-quality MVP.
+{
+  "projectType": "the type you identified",
+  "summary": "2-3 sentence summary of what this project does, who it serves, and why it exists",
+  "targetUsers": "who the users are — roles, goals, skill level, context",
+  "coreFeatures": [{"name": "short name", "description": "what it does and why it matters", "priority": "high|medium|low"}],
+  "techStack": [{"category": "area", "items": ["specific technology choice"]}],
+  "pages": [{"path": "/url-path", "name": "Page Name", "description": "what this page does"}],
+  "dataModel": [{"id": "entity-id", "name": "Entity Name", "attributes": [{"name": "field", "type": "data type"}], "relationships": [{"targetId": "other-entity", "type": "relation type"}]}],
+  "buildPhases": [{"phase": "Phase Name", "tasks": ["specific task"], "duration": "estimate"}],
+  "risks": [{"risk": "what could go wrong", "mitigation": "how to prevent or handle it", "severity": "high|medium|low"}],
+  "starterPrompt": "a detailed prompt a developer could use to build this from scratch"
+}
 
-PROJECT OVERVIEW
-One paragraph summarizing the app.
-
-TECH STACK
-- Frontend: [specific framework/lib choices]
-- Backend: [specific choices]
-- Database: [specific choices]
-- Other: [specific choices]
-
-CORE FEATURES
-- [Feature 1]: brief description
-- [Feature 2]: brief description
-- (continue for all features)
-
-DATA MODEL
-- [Entity 1]: [attribute: type], [attribute: type] — relationships
-- [Entity 2]: [attribute: type], [attribute: type] — relationships
-- (continue for all entities)
-
-PAGES / ROUTES
-- /path → Page Name: description
-- (continue for all pages)
-
-IMPLEMENTATION ORDER
-1. Phase 1 (duration): key tasks
-2. Phase 2 (duration): key tasks
-(continue for all phases)
-
-EDGE CASES & NOTES
-- [Edge case 1]: mitigation
-- [Edge case 2]: mitigation
-
-CODING STANDARDS
-- Use TypeScript strict mode throughout
-- Handle loading and error states in every component
-- Add proper input validation and sanitization
-- Use semantic HTML and accessible patterns
-- Write clean, commented code
-
-Be concrete and realistic. List specific library names, real database fields, and actual file paths where relevant.`,
+RULES:
+- Choose a tech stack that actually fits the project. A game doesn't need Next.js. A CLI tool doesn't need a database. A design system doesn't need auth.
+- Every field must be specific to THIS project. No generic filler.
+- For the starterPrompt, structure it with these sections: PROJECT OVERVIEW, TECH STACK, CORE FEATURES, DATA MODEL, PAGES/ROUTES, IMPLEMENTATION ORDER, EDGE CASES & NOTES, CODING STANDARDS. Fill each with concrete details — real file paths, real component names, real database fields.
+- If the idea is too vague to work with, include a field "feedback" with a sentence suggesting how they could clarify it, but still do your best to produce a full brief based on your best interpretation.
+- Respond with ONLY the JSON object — no markdown, no code fences, no extra text.`,
   })
 
-  return Response.json(object)
+  let cleaned = text.trim()
+  const fenceMatch = cleaned.match(/```(?:json)?\s*([\s\S]*?)```/)
+  if (fenceMatch) cleaned = fenceMatch[1].trim()
+
+  const jsonStart = cleaned.indexOf("{")
+  const jsonEnd = cleaned.lastIndexOf("}")
+  if (jsonStart !== -1 && jsonEnd !== -1) {
+    cleaned = cleaned.slice(jsonStart, jsonEnd + 1)
+  }
+
+  try {
+    const object = JSON.parse(cleaned)
+    return Response.json(object)
+  } catch {
+    return Response.json({ error: "Failed to parse response", raw: text }, { status: 500 })
+  }
 }
