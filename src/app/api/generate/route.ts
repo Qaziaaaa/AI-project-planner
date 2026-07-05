@@ -15,8 +15,8 @@ export async function POST(req: Request) {
 
   if (idea.trim().length < 10) {
     return Response.json({
-      error: "short-input",
-      message: "Tell me a bit more about your idea — what does it do and who is it for?",
+      error: "invalid-idea",
+      message: "That doesn't look like a real project idea. Try describing what your app does, who it's for, and what problem it solves.",
     })
   }
 
@@ -29,9 +29,12 @@ export async function POST(req: Request) {
 
 Read this idea: """${idea}"""
 
-First, identify what KIND of project this is — could be a web app, mobile app, API/microservice, CLI tool, game, design system, data pipeline, e-commerce store, SaaS platform, internal tool, real-estate system, or something else. Your output must be tailored to that type.
+DECIDE which case this is:
+- CASE A — Real project idea (describes something specific, even if brief): produce the full brief JSON.
+- CASE B — Vague but has real intent (e.g. "a social media app"): produce the full brief AND include a "feedback" field suggesting how to clarify.
+- CASE C — Complete nonsense, gibberish, keyboard spam, Lorem Ipsum, or text that does not describe ANY real project idea: respond with ONLY {"error":"invalid-idea","message":"That doesn't look like a real project idea. Try describing what your app does, who it's for, and what problem it solves."}
 
-Then produce a JSON brief with these fields:
+If CASE A or B, produce a JSON brief with these fields:
 
 {
   "projectType": "the type you identified",
@@ -50,7 +53,6 @@ RULES:
 - Choose a tech stack that actually fits the project. A game doesn't need Next.js. A CLI tool doesn't need a database. A design system doesn't need auth.
 - Every field must be specific to THIS project. No generic filler.
 - For the starterPrompt, structure it with these sections: PROJECT OVERVIEW, TECH STACK, CORE FEATURES, DATA MODEL, PAGES/ROUTES, IMPLEMENTATION ORDER, EDGE CASES & NOTES, CODING STANDARDS. Fill each with concrete details — real file paths, real component names, real database fields.
-- If the idea is too vague to work with, include a field "feedback" with a sentence suggesting how they could clarify it, but still do your best to produce a full brief based on your best interpretation.
 - Respond with ONLY the JSON object — no markdown, no code fences, no extra text.`,
   })
 
