@@ -1,14 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#E8613A"/>
-      <stop offset="100%" stop-color="#CC4A2A"/>
-    </linearGradient>
-  </defs>
-  <rect width="100" height="100" rx="20" fill="url(#g)"/>
-  <rect x="20" y="38" width="60" height="42" rx="6" fill="white" opacity="0.95"/>
-  <rect x="35" y="28" width="30" height="14" rx="4" fill="white" opacity="0.95" stroke="url(#g)" stroke-width="3"/>
-  <rect x="43" y="54" width="14" height="10" rx="2" fill="url(#g)" opacity="0.7"/>
-  <line x1="40" y1="70" x2="60" y2="70" stroke="url(#g)" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
-  <line x1="40" y1="74" x2="55" y2="74" stroke="url(#g)" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="6" fill="#CC4A2A"/>
+  <rect x="5" y="12" width="22" height="15" rx="3" fill="#Fff"/>
+  <rect x="12" y="7" width="8" height="7" rx="2" fill="#Fff" stroke="#CC4A2A" stroke-width="2"/>
 </svg>
