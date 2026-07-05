@@ -9,70 +9,54 @@ import { FileDown, RotateCcw, Plus, ClipboardList } from "lucide-react"
 import { downloadMarkdown } from "@/lib/export"
 import type { ProjectBrief } from "@/lib/types"
 
-function SkeletonBlock({ className = "h-5", delay = 0 }: { className?: string; delay?: number }) {
+function SkeletonLine({ className = "h-4", delay = 0 }: { className?: string; delay?: number }) {
   return (
-    <div
-      className={`rounded-lg bg-border/40 animate-pulse ${className}`}
-      style={{ animationDelay: `${delay}ms`, animationDuration: "1.5s" }}
-    />
-  )
-}
-
-function SkeletonCard({ delay = 0 }: { delay?: number }) {
-  return (
-    <div className="rounded-2xl border border-border/20 bg-card/40 p-6 space-y-4" style={{ animationDelay: `${delay}ms` }}>
-      <div className="flex items-center gap-3">
-        <div className="size-8 rounded-full bg-border/40 animate-pulse" style={{ animationDuration: "1.5s" }} />
-        <SkeletonBlock className="h-5 w-40" />
-      </div>
-      <div className="space-y-2.5">
-        <SkeletonBlock />
-        <SkeletonBlock className="h-5 w-3/4" />
-        <SkeletonBlock className="h-5 w-1/2" />
-      </div>
+    <div className={`rounded-lg ${className}`}
+      style={{ animationDelay: `${delay}ms`, animationDuration: "1.5s" }}>
+      <div className="h-full w-full rounded-lg animate-shimmer" />
     </div>
   )
 }
 
 function LoadingSkeleton() {
   return (
-    <div className="flex flex-col gap-5 animate-fade-in-up">
-      <SkeletonCard delay={0} />
-      <SkeletonCard delay={60} />
-      <SkeletonCard delay={120} />
-      <SkeletonCard delay={180} />
-      <div className="rounded-2xl border border-border/20 bg-card/40 p-6" style={{ animationDelay: "240ms" }}>
-        <div className="flex items-center gap-3 mb-4">
-          <div className="size-8 rounded-full bg-border/40 animate-pulse" style={{ animationDuration: "1.5s" }} />
-          <SkeletonBlock className="h-5 w-36" />
+    <div className="space-y-5 animate-fade-in-up">
+      {[0, 1, 2, 3].map((i) => (
+        <div key={i} className="rounded-xl border border-border/50 bg-card p-5 space-y-3 shadow-card"
+          style={{ animationDelay: `${i * 60}ms` }}>
+          <div className="flex items-center gap-3">
+            <div className="size-7 rounded-lg animate-shimmer" />
+            <SkeletonLine className="h-5 w-36" />
+          </div>
+          <div className="space-y-3">
+            <SkeletonLine />
+            <SkeletonLine className="h-4 w-3/4" />
+          </div>
         </div>
-        <div className="h-[300px] rounded-xl bg-border/30 animate-pulse" style={{ animationDuration: "1.5s" }} />
-      </div>
-      <SkeletonCard delay={300} />
+      ))}
     </div>
   )
 }
 
 function EmptyState() {
   return (
-    <div className="flex flex-col items-center justify-center py-20 text-center animate-fade-in-up">
+    <div className="flex flex-col items-center justify-center py-28 text-center animate-fade-in-up">
       <div className="relative mb-10">
-        <div className="absolute -inset-4 blur-3xl bg-primary/8 rounded-full" />
-        <div className="relative flex size-20 items-center justify-center rounded-[2rem] border border-border/20 bg-card/60 shadow-sm">
-          <ClipboardList className="size-9 text-primary/70" />
+        <div className="absolute -inset-8 rounded-full bg-primary/5 blur-3xl" />
+        <div className="relative flex size-24 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/70 shadow-elevated shadow-primary/20">
+          <ClipboardList className="size-11 text-white" />
         </div>
       </div>
-      <h2 className="text-4xl font-heading font-semibold italic tracking-tight text-foreground/85 mb-4 leading-[1.15]">
+      <h2 className="text-4xl font-heading font-semibold tracking-tight text-foreground/90 mb-3">
         Ready to plan your project?
       </h2>
-      <p className="text-base text-muted-foreground/70 max-w-md leading-relaxed">
-        Describe your app idea above and let AI generate a structured project brief
-        with features, tech stack, data model, and more.
+      <p className="text-base text-muted-foreground max-w-sm leading-relaxed">
+        Describe your app idea above and we'll generate a structured brief with features, tech stack, data model, and more.
       </p>
-      <p className="mt-10 text-xs text-muted-foreground/40 font-mono tracking-wider uppercase flex items-center gap-2">
-        <span className="inline-block size-1.5 rounded-full bg-primary/40" />
-        Powered by OpenRouter + AI SDK
-      </p>
+      <div className="mt-12 flex items-center gap-2 text-xs text-muted-foreground/40 font-mono uppercase tracking-wider">
+        <span className="size-1.5 rounded-full bg-primary/40" />
+        Powered by AI
+      </div>
     </div>
   )
 }
@@ -108,32 +92,29 @@ export default function Home() {
   return (
     <>
       <Toaster position="top-center" toastOptions={{
-        style: { background: "oklch(0.17 0.015 280)", border: "1px solid oklch(0.25 0.015 280)", color: "oklch(0.92 0.01 80)" },
+        style: { background: "oklch(0.17 0.02 50)", border: "1px solid oklch(0.28 0.03 50)", color: "oklch(0.95 0.01 75)" },
       }} />
       <div className="flex flex-col min-h-dvh">
-        <header className="relative border-b border-border/20 bg-background/70 backdrop-blur-sm">
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-primary/60 via-primary/20 to-transparent" />
-          <div className="mx-auto flex h-16 max-w-4xl items-center gap-3 px-6">
-            <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10">
-              <ClipboardList className="size-5 text-primary" />
+        <header className="sticky top-0 z-10 border-b border-border/40 bg-background/85 shadow-sm backdrop-blur-lg">
+          <div className="mx-auto flex h-16 max-w-3xl items-center gap-3 px-5">
+            <div className="flex size-9 items-center justify-center rounded-xl bg-primary shadow-md shadow-primary/20">
+              <ClipboardList className="size-5 text-primary-foreground" />
             </div>
             <div className="flex-1 min-w-0">
-              <h1 className="font-heading font-semibold tracking-tight">AI Project Planner</h1>
-              <p className="text-xs text-muted-foreground/60 font-mono tracking-wider uppercase">Turn rough ideas into structured briefs</p>
+              <h1 className="text-xl font-heading font-semibold tracking-tight text-foreground/90">AI Project Planner</h1>
             </div>
             {brief && (
               <div className="flex items-center gap-1.5 shrink-0">
-                <Button variant="ghost" size="sm" onClick={() => { downloadMarkdown(brief); toast.success("Markdown file downloaded") }}
-                  className="gap-2 text-muted-foreground hover:text-foreground text-xs">
+                <Button variant="outline" size="sm" onClick={() => { downloadMarkdown(brief); toast.success("Exported") }}
+                  className="gap-1.5 border-border/40 text-xs shadow-xs">
                   <FileDown className="size-3.5" /> Export
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => lastIdea && handleGenerate(lastIdea)} disabled={loading}
-                  className="gap-2 text-muted-foreground hover:text-foreground text-xs">
+                <Button variant="outline" size="sm" onClick={() => lastIdea && handleGenerate(lastIdea)} disabled={loading}
+                  className="gap-1.5 border-border/40 text-xs shadow-xs">
                   <RotateCcw className="size-3.5" /> Regenerate
                 </Button>
-                <div className="w-px h-5 bg-border/40 mx-1" />
                 <Button variant="outline" size="sm" onClick={() => { setBrief(null); setLastIdea("") }}
-                  className="gap-2 border-border/20 text-xs">
+                  className="gap-1.5 border-border/40 text-xs shadow-xs">
                   <Plus className="size-3.5" /> New
                 </Button>
               </div>
@@ -141,8 +122,8 @@ export default function Home() {
           </div>
         </header>
 
-        <main className="flex-1 mx-auto w-full max-w-4xl px-6 py-10">
-          <div className="mb-12">
+        <main className="flex-1 mx-auto w-full max-w-3xl px-5 py-12">
+          <div className="mb-10">
             <IdeaInput onGenerate={handleGenerate} loading={loading} />
           </div>
           {loading ? <LoadingSkeleton /> : brief ? (

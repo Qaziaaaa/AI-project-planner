@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
-import { Sora, DM_Sans, JetBrains_Mono } from "next/font/google";
+import { Instrument_Serif, Figtree, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const sora = Sora({
-  variable: "--font-sora",
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400"],
+  style: ["normal", "italic"],
 });
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+const figtree = Figtree({
+  variable: "--font-figtree",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -20,7 +22,15 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "AI Project Planner",
-  description: "Turn rough app ideas into structured project briefs with AI",
+  description:
+    "Turn rough app ideas into structured project briefs with AI. Features, tech stack, data model, routes, build phases, and more.",
+  icons: [{ rel: "icon", url: "/favicon.svg" }],
+  openGraph: {
+    title: "AI Project Planner",
+    description:
+      "Turn rough app ideas into structured project briefs with AI.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -31,7 +41,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${sora.variable} ${dmSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${instrumentSerif.variable} ${figtree.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

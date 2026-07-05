@@ -17,19 +17,19 @@ export function SummarySection({ summary, targetUsers, onUpdate }: SummarySectio
 
   return (
     <EditableSection
-      title="App Summary"
+      title="Summary"
       icon={<FileText className="size-4" />}
       editor={
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-2.5">
-            <label className="text-xs font-medium text-muted-foreground/70 uppercase tracking-wider font-mono">Summary</label>
+        <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-medium text-muted-foreground/60 uppercase tracking-wider">Summary</label>
             <Textarea value={editSummary} onChange={(e) => setEditSummary(e.target.value)}
-              className="min-h-[100px] text-base bg-background/40 rounded-xl" />
+              className="min-h-[90px] text-sm bg-background/40 rounded-lg focus-visible:border-primary/30" />
           </div>
-          <div className="flex flex-col gap-2.5">
-            <label className="text-xs font-medium text-muted-foreground/70 uppercase tracking-wider font-mono">Target Users</label>
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-medium text-muted-foreground/60 uppercase tracking-wider">Target Users</label>
             <Textarea value={editTargetUsers} onChange={(e) => setEditTargetUsers(e.target.value)}
-              className="min-h-[80px] text-base bg-background/40 rounded-xl" />
+              className="min-h-[70px] text-sm bg-background/40 rounded-lg focus-visible:border-primary/30" />
           </div>
         </div>
       }
@@ -37,13 +37,11 @@ export function SummarySection({ summary, targetUsers, onUpdate }: SummarySectio
       onEdit={() => { setEditSummary(summary); setEditTargetUsers(targetUsers) }}
       onCancel={() => { setEditSummary(summary); setEditTargetUsers(targetUsers) }}
     >
-      <div className="flex flex-col gap-6">
-        <div className="rounded-xl bg-muted/20 border border-border/15 px-5 py-4">
-          <p className="text-base leading-relaxed text-foreground/75">{summary}</p>
-        </div>
+      <div className="space-y-4">
+        <p className="text-sm leading-relaxed text-foreground/75">{summary}</p>
         <div>
-          <h4 className="text-xs font-medium text-muted-foreground/60 uppercase tracking-wider font-mono mb-2.5">Target Users</h4>
-          <p className="text-base leading-relaxed text-foreground/75">{targetUsers}</p>
+          <h4 className="text-xs font-medium text-muted-foreground/50 uppercase tracking-wider mb-1.5">Target Users</h4>
+          <p className="text-sm leading-relaxed text-foreground/75">{targetUsers}</p>
         </div>
       </div>
     </EditableSection>

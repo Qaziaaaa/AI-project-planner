@@ -28,13 +28,15 @@ export function EditableSection({
   const [editing, setEditing] = useState(defaultEditing)
 
   return (
-    <div className={`rounded-2xl border bg-card/60 shadow-sm transition-all ${
-      editing ? "border-primary/25 shadow-primary/5" : "border-border/20 hover:border-border/35"
+    <div className={`rounded-xl border bg-card transition-all ${
+      editing
+        ? "border-primary/40 shadow-card-editing"
+        : "border-border/50 shadow-card hover:shadow-card-hover hover:border-border/70"
     }`}>
-      <div className="flex items-center justify-between px-6 py-4 border-b border-border/10">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-border/25">
         <div className="flex items-center gap-3 min-w-0">
           {icon && (
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary/70">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary/75">
               {icon}
             </span>
           )}
@@ -48,7 +50,7 @@ export function EditableSection({
               variant="ghost"
               size="xs"
               onClick={() => { setEditing(true); onEdit?.() }}
-              className="text-muted-foreground/40 hover:text-muted-foreground gap-1.5 text-xs"
+              className="text-muted-foreground/50 hover:text-foreground gap-1.5 text-xs h-7 px-2.5"
             >
               <Pencil className="size-3.5" />
               Edit
@@ -59,7 +61,7 @@ export function EditableSection({
                 variant="ghost"
                 size="xs"
                 onClick={() => { setEditing(false); onSave?.() }}
-                className="text-green-600 hover:text-green-500 hover:bg-green-500/8 gap-1.5 text-xs"
+                className="text-secondary hover:text-secondary/80 hover:bg-secondary/10 gap-1.5 text-xs h-7 px-2.5"
               >
                 <Check className="size-3.5" />
                 Save
@@ -68,16 +70,15 @@ export function EditableSection({
                 variant="ghost"
                 size="xs"
                 onClick={() => { setEditing(false); onCancel?.() }}
-                className="text-muted-foreground/40 hover:text-muted-foreground gap-1.5 text-xs"
+                className="text-muted-foreground/50 hover:text-muted-foreground gap-1 text-xs h-7"
               >
                 <X className="size-3.5" />
-                Cancel
               </Button>
             </>
           )}
         </div>
       </div>
-      <div className="px-6 py-5">
+      <div className="px-5 py-4">
         {editing && editor ? editor : children}
       </div>
     </div>

@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { Zap, Loader2 } from "lucide-react"
+import { Sparkles, Loader2 } from "lucide-react"
 
 interface IdeaInputProps {
   onGenerate: (idea: string) => Promise<void>
@@ -12,6 +12,7 @@ interface IdeaInputProps {
 
 export function IdeaInput({ onGenerate, loading }: IdeaInputProps) {
   const [idea, setIdea] = useState("")
+  const [focused, setFocused] = useState(false)
 
   const handleSubmit = () => {
     if (!idea.trim() || loading) return
@@ -19,33 +20,39 @@ export function IdeaInput({ onGenerate, loading }: IdeaInputProps) {
   }
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="relative">
+    <div className="relative">
+      <div className={`rounded-xl border bg-card transition-all ${
+        focused
+          ? "border-primary/50 shadow-card-editing ring-1 ring-primary/15"
+          : "border-border/50 shadow-card hover:shadow-card-hover hover:border-border/70"
+      }`}>
         <Textarea
           placeholder="Describe your app idea in a few sentences..."
           value={idea}
           onChange={(e) => setIdea(e.target.value)}
-          className="min-h-[130px] resize-none text-base leading-relaxed bg-card/60 rounded-2xl border-border/25 px-6 py-5 shadow-sm focus-visible:border-primary/40 placeholder:text-muted-foreground/40"
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          className="min-h-[130px] resize-none text-base leading-relaxed bg-transparent border-0 shadow-none rounded-xl px-5 pt-4 pb-3 focus-visible:ring-0 placeholder:text-muted-foreground/35"
           onKeyDown={(e) => {
             if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
               handleSubmit()
             }
           }}
         />
-        <div className="absolute bottom-3 right-3 flex items-center gap-2">
-          <span className="text-xs text-muted-foreground/40 font-mono hidden sm:inline">
-            ⌘↵
+        <div className="flex items-center justify-between px-5 pb-4">
+          <span className="text-xs text-muted-foreground/40 font-mono">
+            ⌘↵ to generate
           </span>
           <Button
             onClick={handleSubmit}
             disabled={!idea.trim() || loading}
             size="sm"
-            className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm text-sm h-8 px-4 rounded-xl"
+            className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground shadow-md text-sm h-9 px-5 rounded-lg transition-all active:scale-[0.97]"
           >
             {loading ? (
               <Loader2 className="size-4 animate-spin" />
             ) : (
-              <Zap className="size-4" />
+              <Sparkles className="size-4" />
             )}
             {loading ? "Generating..." : "Generate"}
           </Button>

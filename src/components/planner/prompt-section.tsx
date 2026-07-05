@@ -25,22 +25,22 @@ export function PromptSection({ prompt, onUpdate }: PromptSectionProps) {
     <EditableSection title="Coding Agent Prompt" icon={<Terminal className="size-4" />}
       editor={
         <Textarea value={editPrompt} onChange={(e) => setEditPrompt(e.target.value)}
-          className="min-h-[220px] text-sm font-mono bg-background/40 rounded-xl leading-relaxed" />
+          className="min-h-[200px] text-xs font-mono bg-background/40 rounded-lg leading-relaxed" />
       }
       onSave={() => onUpdate(editPrompt)}
       onEdit={() => setEditPrompt(prompt)}
       onCancel={() => setEditPrompt(prompt)}
     >
       <div className="relative group/code">
-        <div className="max-h-[280px] overflow-y-auto rounded-xl border border-border/15 bg-[#0a0a0f] p-5">
-          <pre className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-300 font-mono">
+        <div className="max-h-[260px] overflow-y-auto rounded-lg border border-border/25 bg-[#1c1917] p-4">
+          <pre className="whitespace-pre-wrap text-xs leading-relaxed text-stone-300 font-mono">
             {prompt}
           </pre>
         </div>
-        <div className="absolute top-3 right-3 opacity-0 group-hover/code:opacity-100 transition-opacity">
-          <Button variant="outline" size="xs" className="gap-1.5 border-border/20 bg-[#0a0a0f]/80 backdrop-blur-sm rounded-xl" onClick={handleCopy}>
-            {copied ? <><Check className="size-3.5 text-green-400" /><span className="text-xs">Copied</span></>
-              : <><Copy className="size-3.5" /><span className="text-xs">Copy</span></>}
+        <div className="absolute top-2.5 right-2.5">
+          <Button variant="outline" size="xs" className="gap-1.5 border-stone-600/40 bg-stone-800/70 text-stone-300 hover:text-stone-100 hover:bg-stone-700/80 hover:border-stone-500/50 backdrop-blur-sm rounded-lg h-7 shadow-sm" onClick={handleCopy}>
+            {copied ? <><Check className="size-3 text-secondary" /><span className="text-[10px]">Copied</span></>
+              : <><Copy className="size-3" /><span className="text-[10px]">Copy</span></>}
           </Button>
         </div>
       </div>

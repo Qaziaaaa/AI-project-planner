@@ -90,9 +90,52 @@ Return a complete JSON project brief covering:
 - dataModel: 3-6 entities with id (kebab-case), name, attributes (name + type), relationships (targetId + type)
 - buildPhases: 3-5 phases with name, tasks array, duration
 - risks: 2-4 risks with risk, mitigation, severity (high/medium/low)
-- starterPrompt: a complete copyable prompt starting with "You are a senior developer..." for a coding agent
+- starterPrompt: a comprehensive, production-ready prompt for a coding agent (see format below)
 
-Be concrete and realistic. Keep responses concise.`,
+The starterPrompt must be a detailed, structured prompt following this format exactly:
+
+You are a senior developer implementing [app name]. Build a production-quality MVP.
+
+PROJECT OVERVIEW
+One paragraph summarizing the app.
+
+TECH STACK
+- Frontend: [specific framework/lib choices]
+- Backend: [specific choices]
+- Database: [specific choices]
+- Other: [specific choices]
+
+CORE FEATURES
+- [Feature 1]: brief description
+- [Feature 2]: brief description
+- (continue for all features)
+
+DATA MODEL
+- [Entity 1]: [attribute: type], [attribute: type] — relationships
+- [Entity 2]: [attribute: type], [attribute: type] — relationships
+- (continue for all entities)
+
+PAGES / ROUTES
+- /path → Page Name: description
+- (continue for all pages)
+
+IMPLEMENTATION ORDER
+1. Phase 1 (duration): key tasks
+2. Phase 2 (duration): key tasks
+(continue for all phases)
+
+EDGE CASES & NOTES
+- [Edge case 1]: mitigation
+- [Edge case 2]: mitigation
+
+CODING STANDARDS
+- Use TypeScript strict mode throughout
+- Handle loading and error states in every component
+- Add proper input validation and sanitization
+- Use semantic HTML and accessible patterns
+- Write clean, commented code
+
+Be concrete and realistic. List specific library names, real database fields, and actual file paths where relevant.`,
   })
 
   return Response.json(object)
