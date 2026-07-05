@@ -21,12 +21,13 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Project Planner",
+  title: "BriefKit — AI Project Planner",
   description:
     "Turn rough app ideas into structured project briefs with AI. Features, tech stack, data model, routes, build phases, and more.",
   icons: [{ rel: "icon", url: "/favicon.svg" }],
+  other: { "theme-color": "#14100E" },
   openGraph: {
-    title: "AI Project Planner",
+    title: "BriefKit — AI Project Planner",
     description:
       "Turn rough app ideas into structured project briefs with AI.",
     type: "website",

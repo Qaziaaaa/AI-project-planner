@@ -1,4 +1,4 @@
-# AI Project Planner
+# BriefKit
 
 Turn rough app ideas into structured, editable project briefs with AI.
 
@@ -7,7 +7,7 @@ Built with Next.js 16, React 19, Tailwind CSS v4, shadcn/ui, AI SDK, and ReactFl
 ## Getting Started
 
 1. Clone the repo
-2. Copy `.env.example` to `.env.local` and add your [OpenRouter API key](https://openrouter.ai/keys)
+2. Copy `.env.example` to `.env.local` and add your [Groq API key](https://console.groq.com/keys)
 3. Install dependencies:
 
 ```bash
@@ -26,7 +26,7 @@ npm run dev
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
 
-Set the `OPENROUTER_API_KEY` environment variable in your deployment dashboard.
+Set the `GROQ_API_KEY` environment variable in your deployment dashboard.
 
 ---
 

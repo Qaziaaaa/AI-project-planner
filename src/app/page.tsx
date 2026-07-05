@@ -5,7 +5,7 @@ import { IdeaInput } from "@/components/planner/idea-input"
 import { BriefView } from "@/components/planner/brief-view"
 import { Button } from "@/components/ui/button"
 import { Toaster, toast } from "sonner"
-import { FileDown, RotateCcw, Plus, ClipboardList, Lightbulb, Info } from "lucide-react"
+import { FileDown, RotateCcw, Plus, Briefcase, Lightbulb, Info } from "lucide-react"
 import { downloadMarkdown } from "@/lib/export"
 import type { ProjectBrief } from "@/lib/types"
 
@@ -44,14 +44,14 @@ function EmptyState() {
       <div className="relative mb-10">
         <div className="absolute -inset-8 rounded-full bg-primary/5 blur-3xl" />
         <div className="relative flex size-24 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/70 shadow-elevated shadow-primary/20">
-          <ClipboardList className="size-11 text-white" />
+          <Briefcase className="size-11 text-white" />
         </div>
       </div>
       <h2 className="text-4xl font-heading font-semibold tracking-tight text-foreground/90 mb-3">
         Ready to plan your project?
       </h2>
       <p className="text-base text-muted-foreground max-w-sm leading-relaxed">
-        Describe your app idea above and we'll generate a structured brief with features, tech stack, data model, and more.
+        Describe your app idea above and BriefKit will generate a structured project brief with features, tech stack, data model, and more.
       </p>
       <div className="mt-12 flex items-center gap-2 text-xs text-muted-foreground/40 font-mono uppercase tracking-wider">
         <span className="size-1.5 rounded-full bg-primary/40" />
@@ -102,10 +102,10 @@ export default function Home() {
         <header className="sticky top-0 z-10 border-b border-border/40 bg-background/85 shadow-sm backdrop-blur-lg">
           <div className="mx-auto flex h-16 max-w-3xl items-center gap-3 px-5">
             <div className="flex size-9 items-center justify-center rounded-xl bg-primary shadow-md shadow-primary/20">
-              <ClipboardList className="size-5 text-primary-foreground" />
+              <Briefcase className="size-5 text-primary-foreground" />
             </div>
             <div className="flex-1 min-w-0">
-              <h1 className="text-xl font-heading font-semibold tracking-tight text-foreground/90">AI Project Planner</h1>
+              <h1 className="text-xl font-heading font-semibold tracking-tight text-foreground/90">BriefKit</h1>
             </div>
             {brief && (
               <div className="flex items-center gap-1.5 shrink-0">
