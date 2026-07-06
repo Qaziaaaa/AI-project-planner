@@ -24,7 +24,11 @@ export const metadata: Metadata = {
   title: "BriefKit — AI Project Planner",
   description:
     "Turn rough app ideas into structured project briefs with AI. Features, tech stack, data model, routes, build phases, and more.",
-  icons: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 36 36%22><rect width=%2236%22 height=%2236%22 rx=%228%22 fill=%22%23CC4A2A%22/><text y=%2232%22 font-size=%2228%22 text-anchor=%22middle%22 x=%2218%22>💼</text></svg>",
+  icons: [
+    { rel: "icon", url: "/favicon.svg", type: "image/svg+xml" },
+    { rel: "shortcut icon", url: "/favicon.svg", type: "image/svg+xml" },
+    { rel: "icon", url: "/favicon.ico", type: "image/x-icon" },
+  ],
   appleWebApp: { title: "BriefKit" },
   other: { "theme-color": "#14100E" },
   openGraph: {
