@@ -140,7 +140,8 @@ function FlowDiagram({ entities }: { entities: DataEntity[] }) {
         <Background variant={BackgroundVariant.Dots} gap={20} size={1.5} color="oklch(0.5 0.03 50 / 0.06)" />
         <Controls showInteractive={false} className="!border-border/25 !bg-card/90 !shadow-md !backdrop-blur-sm !rounded-lg" />
         <MiniMap nodeStrokeColor="oklch(0.5 0.03 50 / 0.25)" nodeColor="oklch(0.85 0.01 60)"
-          maskColor="oklch(0 0 0 / 0.08)" style={{ background: "oklch(0.97 0.01 75 / 0.9)" }}
+          nodeStrokeWidth={3} maskColor="oklch(0 0 0 / 0.08)" zoomable pannable
+          style={{ width: 140, height: 100, background: "oklch(0.97 0.01 75 / 0.9)" }}
           className="!border !border-border/20 !rounded-lg !shadow-sm" />
       </ReactFlow>
     </div>

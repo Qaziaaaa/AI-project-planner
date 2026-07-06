@@ -46,13 +46,37 @@ If CASE A or B, produce a JSON brief with these fields:
   "dataModel": [{"id": "entity-id", "name": "Entity Name", "attributes": [{"name": "field", "type": "data type"}], "relationships": [{"targetId": "other-entity", "type": "relation type"}]}],
   "buildPhases": [{"phase": "Phase Name", "tasks": ["specific task"], "duration": "estimate"}],
   "risks": [{"risk": "what could go wrong", "mitigation": "how to prevent or handle it", "severity": "high|medium|low"}],
-  "starterPrompt": "a detailed prompt a developer could use to build this from scratch"
+  "starterPrompt": "a comprehensive, production-ready coding agent prompt with all sections described below"
 }
 
 RULES:
 - Choose a tech stack that actually fits the project. A game doesn't need Next.js. A CLI tool doesn't need a database. A design system doesn't need auth.
 - Every field must be specific to THIS project. No generic filler.
-- For the starterPrompt, structure it with these sections: PROJECT OVERVIEW, TECH STACK, CORE FEATURES, DATA MODEL, PAGES/ROUTES, IMPLEMENTATION ORDER, EDGE CASES & NOTES, CODING STANDARDS. Fill each with concrete details — real file paths, real component names, real database fields.
+- The starterPrompt is the most important field. It must be a real, copy-pasteable prompt a developer could hand to a coding agent to build the project. Structure it with these sections, each filled with concrete detail:
+
+  PROJECT OVERVIEW — 2-3 paragraphs describing what to build, key constraints, target users, and success criteria.
+
+  TECH STACK — Specific versions and rationale. Real packages, real libraries, real databases. Include config details (e.g. "Next.js 16 with App Router, Turbopack, TypeScript strict").
+
+  ARCHITECTURE — High-level design decisions: monorepo vs single repo, API design patterns (REST, GraphQL, tRPC), state management approach, auth strategy.
+
+  CORE FEATURES — Spec-level detail for each feature. Include acceptance criteria, component breakdown, data flow. E.g. "Feature: User sign-up. Acceptance: email+password form, OAuth options, email verification flow. Components: SignUpForm, OAuthButtons, EmailVerificationBanner."
+
+  DATA MODEL — Complete schema with all fields, types, constraints, indexes, and relationships. Real SQL/Prisma/TypeORM schema format.
+
+  API ENDPOINTS — Full route table: method, path, request body, response shape, auth requirements. Skip if not relevant.
+
+  PAGES / ROUTES — URL structure with component tree for each page. Include loading states, error boundaries, data fetching strategy.
+
+  IMPLEMENTATION ORDER — Phase-by-phase build plan with concrete file paths (e.g. src/app/page.tsx, src/components/auth/SignUpForm.tsx). Each phase must have specific, actionable tasks.
+
+  EDGE CASES & NOTES — Error states, loading states, empty states, permission checks, rate limiting, pagination, offline support, optimistic updates.
+
+  TESTING STRATEGY — What to test at each layer (unit, integration, e2e). Specific tools and patterns.
+
+  CODING STANDARDS — Exact lint rules, naming conventions (camelCase, PascalCase), file structure, import ordering, error handling patterns, accessibility requirements.
+
+- The starterPrompt should be at minimum 400 words. Be extremely concrete — mention actual file paths, component names, npm packages with versions, and database field types.
 - Respond with ONLY the JSON object — no markdown, no code fences, no extra text.`,
   })
 
