@@ -19,96 +19,43 @@ export async function POST(req: Request) {
     apiKey,
   })
 
-  // Using deepseek/deepseek-chat for fast, professional PM reasoning & structured JSON
+  // Using deepseek/deepseek-chat with strict token limit for lightning-fast response times
   const model = openrouter("deepseek/deepseek-chat")
 
   let text: string
   try {
     const result = await generateText({
       model,
-      temperature: 0.4,
-      prompt: `You are a Principal Technical Product Manager and Senior AI Solution Architect. Your job is to take a rough project idea and turn it into an elite, comprehensive, enterprise-grade project brief.
+      temperature: 0.3,
+      maxOutputTokens: 4096,
+      prompt: `You are a Principal Technical Product Manager and Senior AI Solution Architect. Transform this project idea into a complete, elite project brief JSON:
 
-Read this project idea: """${idea}"""
+Idea: "${idea}"
 
-Produce a JSON object with EXACTLY the following structure (do not omit any fields):
-
+Return ONLY a valid JSON object with this exact structure (no markdown fences, no extra text):
 {
-  "projectType": "the specific technical architecture type (e.g. Next.js SaaS, Python CLI, React Native App)",
-  "summary": "3-4 sentence executive summary detailing what this project does, target business value, and technical differentiator.",
-  "targetUsers": "Detailed user personas — roles, technical skill level, core workflows, and success metrics.",
-  "coreFeatures": [
-    {
-      "name": "Feature Name",
-      "description": "What it does and why it matters",
-      "priority": "high|medium|low",
-      "acceptanceCriteria": ["Given X, When Y, Then Z", "Specific testable condition"]
-    }
-  ],
-  "techStack": [
-    {
-      "category": "Frontend|Backend|Database|DevOps|AI",
-      "items": ["Specific technology choice with version"],
-      "rationale": "Why this specific choice was made over alternatives"
-    }
-  ],
-  "pages": [
-    {
-      "path": "/url-path",
-      "name": "Page Name",
-      "description": "Component tree, data fetching strategy, and state management for this page"
-    }
-  ],
-  "dataModel": [
-    {
-      "id": "entity-id",
-      "name": "Entity Name",
-      "attributes": [{"name": "field_name", "type": "String|Int|Boolean|DateTime|UUID"}],
-      "relationships": [{"targetId": "other-entity", "type": "one-to-many|many-to-many|one-to-one"}]
-    }
-  ],
-  "buildPhases": [
-    {
-      "phase": "Phase Name (e.g. Phase 1: Core Foundation)",
-      "tasks": ["Specific actionable engineering task with file paths"],
-      "duration": "1 week"
-    }
-  ],
-  "risks": [
-    {
-      "risk": "Specific technical or product risk",
-      "mitigation": "Concrete architectural or operational mitigation",
-      "severity": "high|medium|low"
-    }
-  ],
+  "projectType": "architecture type",
+  "summary": "3 sentence executive summary",
+  "targetUsers": "detailed user personas and workflows",
+  "coreFeatures": [{"name": "string", "description": "string", "priority": "high|medium|low", "acceptanceCriteria": ["Given X, When Y, Then Z"]}],
+  "techStack": [{"category": "Frontend|Backend|Database|DevOps", "items": ["string"], "rationale": "string"}],
+  "pages": [{"path": "string", "name": "string", "description": "string"}],
+  "dataModel": [{"id": "string", "name": "string", "attributes": [{"name": "string", "type": "string"}], "relationships": [{"targetId": "string", "type": "string"}]}],
+  "buildPhases": [{"phase": "string", "tasks": ["string"], "duration": "string"}],
+  "risks": [{"risk": "string", "mitigation": "string", "severity": "high|medium|low"}],
   "costEstimate": {
-    "hosting": { "service": "Vercel / AWS", "tier": "Hobby / Pro", "estimatedCost": "$20/mo" },
-    "database": { "service": "Supabase / Neon", "tier": "Free / Pro", "estimatedCost": "$25/mo" },
-    "thirdPartyServices": [
-      { "service": "OpenAI / OpenRouter API", "tier": "Pay-as-you-go", "estimatedCost": "$15/mo" }
-    ],
-    "totalEstimatedMonthly": "$60/mo"
+    "hosting": { "service": "string", "tier": "string", "estimatedCost": "string" },
+    "database": { "service": "string", "tier": "string", "estimatedCost": "string" },
+    "thirdPartyServices": [{"service": "string", "tier": "string", "estimatedCost": "string"}],
+    "totalEstimatedMonthly": "string"
   },
-  "securityChecklist": [
-    {
-      "category": "Auth|Data|Network|Compliance",
-      "requirement": "Specific security requirement",
-      "recommendation": "Implementation guideline (e.g. bcrypt hash, rate limiting via Redis)"
-    }
-  ],
+  "securityChecklist": [{"category": "Auth|Data|Network|Compliance", "requirement": "string", "recommendation": "string"}],
   "codeScaffolding": {
-    "fileTree": "src/\\n  app/\\n    layout.tsx\\n    page.tsx\\n  components/\\n    ui/\\npackage.json\\ntsconfig.json",
-    "initialConfigs": [
-      { "filename": "package.json", "content": "{\\n  \"name\": \"project\",\\n  \"version\": \"1.0.0\"\\n}" },
-      { "filename": ".env.example", "content": "DATABASE_URL=postgres://...\\nAPI_KEY=..." }
-    ]
+    "fileTree": "src/\\n  app/\\n    page.tsx\\npackage.json",
+    "initialConfigs": [{"filename": "package.json", "content": "{\\"name\\":\\"app\\"}"}]
   },
-  "starterPrompt": "a comprehensive, production-ready coding agent prompt with all 11 sections described below (OVERVIEW, TECH STACK, ARCHITECTURE, CORE FEATURES, DATA MODEL, API ENDPOINTS, PAGES, IMPLEMENTATION ORDER, EDGE CASES, TESTING, CODING STANDARDS). Minimum 400 words with exact file paths."
-}
-
-RULES:
-- Be extremely specific to THIS project. No generic filler.
-- Respond with ONLY the raw JSON object — no markdown formatting, no code fences, no extra text.`,
+  "starterPrompt": "Comprehensive 400+ word coding agent prompt with all 11 sections (OVERVIEW, TECH STACK, ARCHITECTURE, CORE FEATURES, DATA MODEL, API ENDPOINTS, PAGES, IMPLEMENTATION ORDER, EDGE CASES, TESTING, CODING STANDARDS) with exact file paths."
+}`,
     })
     text = result.text
   } catch (err: unknown) {
