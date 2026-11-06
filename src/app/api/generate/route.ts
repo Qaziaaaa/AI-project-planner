@@ -1,11 +1,6 @@
 import { createOpenAI } from "@ai-sdk/openai"
 import { generateText } from "ai"
 
-const groq = createOpenAI({
-  baseURL: "https://api.groq.com/openai/v1",
-  apiKey: process.env.GROQ_API_KEY,
-})
-
 export async function POST(req: Request) {
   const { idea } = await req.json()
 
@@ -19,6 +14,58 @@ export async function POST(req: Request) {
       message: "That doesn't look like a real project idea. Try describing what your app does, who it's for, and what problem it solves.",
     })
   }
+
+  const apiKey = process.env.GROQ_API_KEY
+
+  // If no API key is set, return a mock response for testing/demo purposes
+  if (!apiKey) {
+    console.warn("GROQ_API_KEY is missing. Returning a mock brief.")
+    return Response.json({
+      projectType: "Full-Stack Web Application (Demo Mode)",
+      summary: `This is a mock project brief for "${idea}". To get real AI-generated briefs, please set GROQ_API_KEY in your .env.local file.`,
+      targetUsers: "End users, Developers, Administrators",
+      feedback: "GROQ_API_KEY environment variable is missing! Add GROQ_API_KEY=your_key to .env.local to enable real AI generation.",
+      coreFeatures: [
+        { name: "User Authentication", description: "Secure login and signup flow.", priority: "high" },
+        { name: "Dashboard View", description: "Main overview of user activity and data.", priority: "high" },
+        { name: "Settings & Profile", description: "Allow users to edit their profile and preferences.", priority: "medium" },
+      ],
+      techStack: [
+        { category: "Frontend", items: ["Next.js", "React", "Tailwind CSS"] },
+        { category: "Backend", items: ["Next.js App Router", "TypeScript"] },
+        { category: "Database", items: ["PostgreSQL", "Prisma"] },
+      ],
+      pages: [
+        { path: "/", name: "Home", description: "Landing page and overview" },
+        { path: "/dashboard", name: "Dashboard", description: "Main user workspace" },
+      ],
+      dataModel: [
+        {
+          id: "user",
+          name: "User",
+          attributes: [
+            { name: "id", type: "String" },
+            { name: "email", type: "String" },
+            { name: "name", type: "String" },
+          ],
+          relationships: [],
+        },
+      ],
+      buildPhases: [
+        { phase: "Phase 1: Foundation", tasks: ["Project setup", "Authentication setup"], duration: "1 week" },
+        { phase: "Phase 2: Core Features", tasks: ["Build dashboard", "Integrate data model"], duration: "2 weeks" },
+      ],
+      risks: [
+        { risk: "API Key missing", mitigation: "Add GROQ_API_KEY to your .env.local file", severity: "high" },
+      ],
+      starterPrompt: `PROJECT OVERVIEW\nBuilding a mock application for: ${idea}.\n\nTECH STACK\nNext.js 16, React 19, Tailwind CSS v4, TypeScript.\n\nARCHITECTURE\nNext.js App Router with React Server Components.\n\nCORE FEATURES\n- Authentication\n- Dashboard\n- User Settings\n\nDATA MODEL\nUser model with basic profile attributes.\n\nIMPLEMENTATION ORDER\n1. Setup project\n2. Configure auth\n3. Build UI components\n\n(Note: Set GROQ_API_KEY in .env.local to get real AI-generated starter prompts!)`,
+    })
+  }
+
+  const groq = createOpenAI({
+    baseURL: "https://api.groq.com/openai/v1",
+    apiKey,
+  })
 
   const model = groq("llama-3.3-70b-versatile")
 
