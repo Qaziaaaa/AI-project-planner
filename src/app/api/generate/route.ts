@@ -67,7 +67,7 @@ export async function POST(req: Request) {
     apiKey,
   })
 
-  const model = groq("llama-3.3-70b-versatile")
+  const model = groq("openai/gpt-oss-120b")
 
   let text: string
   try {
