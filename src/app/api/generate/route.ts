@@ -19,8 +19,8 @@ export async function POST(req: Request) {
     apiKey,
   })
 
-  // Using a highly reliable, free-tier-friendly model on OpenRouter
-  const model = openrouter("google/gemini-2.0-flash-lite-preview:free")
+  // Using deepseek/deepseek-chat for reliable, top-tier generation via OpenRouter
+  const model = openrouter("deepseek/deepseek-chat")
 
   let text: string
   try {
