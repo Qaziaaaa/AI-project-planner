@@ -77,13 +77,20 @@ export default function Home() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idea }),
       })
-      const data = await res.json()
+
+      let data: any = {}
+      try {
+        data = await res.json()
+      } catch {
+        // If response is not valid JSON
+      }
+
       if (data.error === "short-input" || data.error === "invalid-idea") {
         setHint(data.message)
         return
       }
       if (!res.ok) {
-        throw new Error(data.error || "Failed to generate brief")
+        throw new Error(data.error || data.details || `Failed to generate brief (status ${res.status})`)
       }
       setBrief(data as ProjectBrief)
     } catch (e) {

@@ -22,10 +22,12 @@ export async function POST(req: Request) {
 
   const model = groq("llama-3.3-70b-versatile")
 
-  const { text } = await generateText({
-    model,
-    temperature: 0.5,
-    prompt: `You are a senior software engineer and technical strategist. Your job is to take a rough project idea and turn it into a concrete, actionable project brief.
+  let text: string
+  try {
+    const result = await generateText({
+      model,
+      temperature: 0.5,
+      prompt: `You are a senior software engineer and technical strategist. Your job is to take a rough project idea and turn it into a concrete, actionable project brief.
 
 Read this idea: """${idea}"""
 
@@ -78,7 +80,12 @@ RULES:
 
 - The starterPrompt should be at minimum 400 words. Be extremely concrete — mention actual file paths, component names, npm packages with versions, and database field types.
 - Respond with ONLY the JSON object — no markdown, no code fences, no extra text.`,
-  })
+    })
+    text = result.text
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : String(err)
+    return Response.json({ error: "Failed to generate response from AI", details: errorMsg }, { status: 500 })
+  }
 
   let cleaned = text.trim()
   const fenceMatch = cleaned.match(/```(?:json)?\s*([\s\S]*?)```/)
