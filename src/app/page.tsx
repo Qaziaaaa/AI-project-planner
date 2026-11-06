@@ -3,40 +3,12 @@
 import { useState } from "react"
 import { IdeaInput } from "@/components/planner/idea-input"
 import { BriefView } from "@/components/planner/brief-view"
+import { StageProgress, initialStages, type StageState } from "@/components/planner/stage-progress"
 import { Button } from "@/components/ui/button"
 import { Toaster, toast } from "sonner"
 import { FileDown, RotateCcw, Plus, Briefcase, Lightbulb, Info } from "lucide-react"
 import { downloadMarkdown } from "@/lib/export"
 import type { ProjectBrief } from "@/lib/types"
-
-function SkeletonLine({ className = "h-4", delay = 0 }: { className?: string; delay?: number }) {
-  return (
-    <div className={`rounded-lg ${className}`}
-      style={{ animationDelay: `${delay}ms`, animationDuration: "1.5s" }}>
-      <div className="h-full w-full rounded-lg animate-shimmer" />
-    </div>
-  )
-}
-
-function LoadingSkeleton() {
-  return (
-    <div className="space-y-5 animate-fade-in-up">
-      {[0, 1, 2, 3].map((i) => (
-        <div key={i} className="rounded-xl border border-border/50 bg-card p-5 space-y-3 shadow-card"
-          style={{ animationDelay: `${i * 60}ms` }}>
-          <div className="flex items-center gap-3">
-            <div className="size-7 rounded-lg animate-shimmer" />
-            <SkeletonLine className="h-5 w-36" />
-          </div>
-          <div className="space-y-3">
-            <SkeletonLine />
-            <SkeletonLine className="h-4 w-3/4" />
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
 
 function EmptyState() {
   return (
@@ -66,11 +38,13 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [lastIdea, setLastIdea] = useState("")
   const [hint, setHint] = useState<string | null>(null)
+  const [stages, setStages] = useState<StageState[]>(initialStages)
 
   const handleGenerate = async (idea: string) => {
     setLoading(true)
     setHint(null)
     setLastIdea(idea)
+    setStages(initialStages())
     try {
       const res = await fetch("/api/generate", {
         method: "POST",
@@ -78,21 +52,116 @@ export default function Home() {
         body: JSON.stringify({ idea }),
       })
 
-      let data: any = {}
-      try {
-        data = await res.json()
-      } catch {
-        // If response is not valid JSON
-      }
+      const contentType = res.headers.get("content-type") || ""
 
-      if (data.error === "short-input" || data.error === "invalid-idea") {
-        setHint(data.message)
+      // Plain JSON response (validation error or non-streaming fallback)
+      if (contentType.includes("application/json")) {
+        const data = (await res.json()) as {
+          error?: string
+          details?: string
+          message?: string
+        } & Partial<ProjectBrief>
+        if (data.error === "short-input" || data.error === "invalid-idea") {
+          setHint(data.message ?? null)
+          return
+        }
+        if (!res.ok) {
+          throw new Error(data.error || data.details || `Failed to generate brief (status ${res.status})`)
+        }
+        setBrief(data as ProjectBrief)
         return
       }
-      if (!res.ok) {
-        throw new Error(data.error || data.details || `Failed to generate brief (status ${res.status})`)
+
+      if (!res.ok || !res.body) {
+        throw new Error(`Failed to generate brief (status ${res.status})`)
       }
-      setBrief(data as ProjectBrief)
+
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ""
+      let sawBrief = false
+      let stop = false
+      let gotHint = false
+      let fatal: Error | null = null
+
+      const handleEvent = (event: string, raw: string) => {
+        if (!raw || stop) return
+        let payload: {
+          stage?: number
+          token?: string
+          brief?: ProjectBrief
+          error?: string
+          message?: string
+          details?: string
+        }
+        try {
+          payload = JSON.parse(raw)
+        } catch {
+          return
+        }
+        if (event === "stage_start") {
+          const s = payload.stage ?? 0
+          setStages((prev) =>
+            prev.map((st, i) => (i + 1 === s ? { ...st, status: "active", token: "" } : st))
+          )
+        } else if (event === "stage_token") {
+          const s = payload.stage as number
+          const tok = String(payload.token || "")
+          if (!tok) return
+          setStages((prev) =>
+            prev.map((st, i) =>
+              i + 1 === s && st.status === "active"
+                ? { ...st, token: (st.token + tok).slice(-180) }
+                : st
+            )
+          )
+        } else if (event === "stage_done") {
+          const s = payload.stage as number
+          setStages((prev) =>
+            prev.map((st, i) => (i + 1 === s ? { ...st, status: "done", token: "" } : st))
+          )
+        } else if (event === "brief_complete") {
+          sawBrief = true
+          if (payload.brief) setBrief(payload.brief as ProjectBrief)
+          stop = true
+        } else if (event === "error") {
+          stop = true
+          if (payload.error === "short-input" || payload.error === "invalid-idea") {
+            gotHint = true
+            setHint(payload.message ?? null)
+          } else {
+            fatal = new Error(payload.details || payload.error || "Generation failed")
+          }
+        }
+      }
+
+      while (!stop) {
+        const { done, value } = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
+        const parts = buffer.split("\n\n")
+        buffer = parts.pop() || ""
+        for (const part of parts) {
+          let event = "message"
+          let data = ""
+          for (const line of part.split("\n")) {
+            if (line.startsWith("event:")) event = line.slice(6).trim()
+            else if (line.startsWith("data:")) data += line.slice(5).trim()
+          }
+          handleEvent(event, data)
+        }
+      }
+      if (stop) {
+        try {
+          await reader.cancel()
+        } catch {
+          /* already closed */
+        }
+      }
+      if (fatal) throw fatal
+      if (!sawBrief && !gotHint) {
+        throw new Error("Stream ended before the brief was ready — is the backend running?")
+      }
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Something went wrong")
     } finally {
@@ -143,7 +212,7 @@ export default function Home() {
               </div>
             )}
           </div>
-          {loading ? <LoadingSkeleton /> : brief ? (
+          {loading ? <StageProgress stages={stages} /> : brief ? (
             <div className="space-y-4 animate-fade-in-up">
               {brief.feedback && (
                 <div className="flex items-start gap-2.5 rounded-lg border border-amber-200/30 bg-amber-50/5 px-4 py-3 text-sm text-foreground/70">
