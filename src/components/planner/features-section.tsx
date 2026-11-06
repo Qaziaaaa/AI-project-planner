@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { ListChecks, Plus, Trash2 } from "lucide-react"
+import { ListChecks, Plus, Trash2, CheckCircle2 } from "lucide-react"
 import type { Feature } from "@/lib/types"
 
 const priorityColors: Record<string, string> = {
@@ -51,7 +51,7 @@ export function FeaturesSection({ features, onUpdate }: FeaturesSectionProps) {
   const [editFeatures, setEditFeatures] = useState<Feature[]>(features)
 
   return (
-    <EditableSection title="Core Features" icon={<ListChecks className="size-4" />}
+    <EditableSection title="Core Features & Epics" icon={<ListChecks className="size-4" />}
       editor={
         <div className="space-y-2.5">
           {editFeatures.map((f, i) => (
@@ -69,17 +69,32 @@ export function FeaturesSection({ features, onUpdate }: FeaturesSectionProps) {
       onEdit={() => setEditFeatures([...features])}
       onCancel={() => setEditFeatures([...features])}
     >
-      <div className="space-y-2">
+      <div className="space-y-3">
         {features.map((f, i) => (
-          <div key={i} className="flex items-start gap-3 rounded-lg border border-border/30 bg-card px-4 py-3 shadow-subtle">
-            <span className="mt-1 size-1.5 shrink-0 rounded-full bg-primary/40" />
-            <div className="min-w-0 space-y-1 flex-1">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm font-medium text-foreground/85">{f.name}</span>
-                <Badge className={`text-[10px] px-1.5 py-0 border ${priorityColors[f.priority]}`}>{f.priority}</Badge>
+          <div key={i} className="flex flex-col gap-2 rounded-lg border border-border/30 bg-card px-4 py-3.5 shadow-subtle">
+            <div className="flex items-start gap-3">
+              <span className="mt-1 size-1.5 shrink-0 rounded-full bg-primary/40" />
+              <div className="min-w-0 space-y-1 flex-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-sm font-medium text-foreground/85">{f.name}</span>
+                  <Badge className={`text-[10px] px-1.5 py-0 border ${priorityColors[f.priority]}`}>{f.priority}</Badge>
+                </div>
+                <p className="text-xs text-muted-foreground/65 leading-relaxed">{f.description}</p>
               </div>
-              <p className="text-xs text-muted-foreground/65 leading-relaxed">{f.description}</p>
             </div>
+            {f.acceptanceCriteria && f.acceptanceCriteria.length > 0 && (
+              <div className="mt-2 rounded-md bg-muted/40 border border-border/20 p-2.5 space-y-1.5 pl-7">
+                <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider font-mono">Acceptance Criteria</span>
+                <ul className="space-y-1">
+                  {f.acceptanceCriteria.map((ac, j) => (
+                    <li key={j} className="flex items-start gap-2 text-xs text-foreground/80">
+                      <CheckCircle2 className="size-3.5 text-primary shrink-0 mt-0.5" />
+                      <span>{ac}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         ))}
       </div>

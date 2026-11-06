@@ -19,35 +19,96 @@ export async function POST(req: Request) {
     apiKey,
   })
 
-  // Using deepseek/deepseek-chat for reliable, top-tier generation via OpenRouter
+  // Using deepseek/deepseek-chat for fast, professional PM reasoning & structured JSON
   const model = openrouter("deepseek/deepseek-chat")
 
   let text: string
   try {
     const result = await generateText({
       model,
-      temperature: 0.5,
-      prompt: `You are a senior software engineer and technical strategist. Your job is to take a rough project idea and turn it into a concrete, actionable project brief.
+      temperature: 0.4,
+      prompt: `You are a Principal Technical Product Manager and Senior AI Solution Architect. Your job is to take a rough project idea and turn it into an elite, comprehensive, enterprise-grade project brief.
 
-Read this idea: """${idea}"""
+Read this project idea: """${idea}"""
 
-If CASE A or B, produce a JSON brief with these fields:
+Produce a JSON object with EXACTLY the following structure (do not omit any fields):
 
 {
-  "projectType": "the type you identified",
-  "summary": "2-3 sentence summary of what this project does, who it serves, and why it exists",
-  "targetUsers": "who the users are — roles, goals, skill level, context",
-  "coreFeatures": [{"name": "short name", "description": "what it does and why it matters", "priority": "high|medium|low"}],
-  "techStack": [{"category": "area", "items": ["specific technology choice"]}],
-  "pages": [{"path": "/url-path", "name": "Page Name", "description": "what this page does"}],
-  "dataModel": [{"id": "entity-id", "name": "Entity Name", "attributes": [{"name": "field", "type": "data type"}], "relationships": [{"targetId": "other-entity", "type": "relation type"}]}],
-  "buildPhases": [{"phase": "Phase Name", "tasks": ["specific task"], "duration": "estimate"}],
-  "risks": [{"risk": "what could go wrong", "mitigation": "how to prevent or handle it", "severity": "high|medium|low"}],
-  "starterPrompt": "a comprehensive, production-ready coding agent prompt with all sections described below"
+  "projectType": "the specific technical architecture type (e.g. Next.js SaaS, Python CLI, React Native App)",
+  "summary": "3-4 sentence executive summary detailing what this project does, target business value, and technical differentiator.",
+  "targetUsers": "Detailed user personas — roles, technical skill level, core workflows, and success metrics.",
+  "coreFeatures": [
+    {
+      "name": "Feature Name",
+      "description": "What it does and why it matters",
+      "priority": "high|medium|low",
+      "acceptanceCriteria": ["Given X, When Y, Then Z", "Specific testable condition"]
+    }
+  ],
+  "techStack": [
+    {
+      "category": "Frontend|Backend|Database|DevOps|AI",
+      "items": ["Specific technology choice with version"],
+      "rationale": "Why this specific choice was made over alternatives"
+    }
+  ],
+  "pages": [
+    {
+      "path": "/url-path",
+      "name": "Page Name",
+      "description": "Component tree, data fetching strategy, and state management for this page"
+    }
+  ],
+  "dataModel": [
+    {
+      "id": "entity-id",
+      "name": "Entity Name",
+      "attributes": [{"name": "field_name", "type": "String|Int|Boolean|DateTime|UUID"}],
+      "relationships": [{"targetId": "other-entity", "type": "one-to-many|many-to-many|one-to-one"}]
+    }
+  ],
+  "buildPhases": [
+    {
+      "phase": "Phase Name (e.g. Phase 1: Core Foundation)",
+      "tasks": ["Specific actionable engineering task with file paths"],
+      "duration": "1 week"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Specific technical or product risk",
+      "mitigation": "Concrete architectural or operational mitigation",
+      "severity": "high|medium|low"
+    }
+  ],
+  "costEstimate": {
+    "hosting": { "service": "Vercel / AWS", "tier": "Hobby / Pro", "estimatedCost": "$20/mo" },
+    "database": { "service": "Supabase / Neon", "tier": "Free / Pro", "estimatedCost": "$25/mo" },
+    "thirdPartyServices": [
+      { "service": "OpenAI / OpenRouter API", "tier": "Pay-as-you-go", "estimatedCost": "$15/mo" }
+    ],
+    "totalEstimatedMonthly": "$60/mo"
+  },
+  "securityChecklist": [
+    {
+      "category": "Auth|Data|Network|Compliance",
+      "requirement": "Specific security requirement",
+      "recommendation": "Implementation guideline (e.g. bcrypt hash, rate limiting via Redis)"
+    }
+  ],
+  "codeScaffolding": {
+    "fileTree": "src/\\n  app/\\n    layout.tsx\\n    page.tsx\\n  components/\\n    ui/\\npackage.json\\ntsconfig.json",
+    "initialConfigs": [
+      { "filename": "package.json", "content": "{\\n  \"name\": \"project\",\\n  \"version\": \"1.0.0\"\\n}" },
+      { "filename": ".env.example", "content": "DATABASE_URL=postgres://...\\nAPI_KEY=..." }
+    ]
+  },
+  "starterPrompt": "a comprehensive, production-ready coding agent prompt with all 11 sections described below (OVERVIEW, TECH STACK, ARCHITECTURE, CORE FEATURES, DATA MODEL, API ENDPOINTS, PAGES, IMPLEMENTATION ORDER, EDGE CASES, TESTING, CODING STANDARDS). Minimum 400 words with exact file paths."
 }
 
 RULES:
-- Respond with ONLY the JSON object — no markdown, no code fences, no extra text.`,
+- Be extremely specific to THIS project. No generic filler.
+- Respond with ONLY the raw JSON object — no markdown formatting, no code fences, no extra text.`,
     })
     text = result.text
   } catch (err: unknown) {
