@@ -40,6 +40,7 @@ async def health() -> dict:
 
 
 @app.post("/api/generate-stream")
+@app.post("/generate-stream")  # alias: Vercel may strip the /api prefix
 async def generate_stream(request: Request):
     try:
         body = await request.json()

@@ -1,6 +1,9 @@
 const BACKEND_URL =
   process.env.BRIEFKIT_BACKEND_URL || "http://localhost:8001/api/generate-stream"
 
+// The Senior PM pipeline streams for up to ~3 minutes; Vercel must not cut it off.
+export const maxDuration = 300
+
 export async function POST(req: Request) {
   let idea: unknown
   try {
